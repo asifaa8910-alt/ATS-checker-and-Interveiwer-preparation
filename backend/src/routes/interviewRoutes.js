@@ -1,0 +1,20 @@
+const express = require('express');
+const router = express.Router();
+const { 
+  startInterview, 
+  gradeAnswer, 
+  finishInterview, 
+  submitInterview, 
+  getInterviewHistory, 
+  getInterviewById 
+} = require('../controllers/interviewController');
+const { protect } = require('../middleware/authMiddleware');
+
+router.post('/start', protect, startInterview);
+router.post('/grade-answer', protect, gradeAnswer);
+router.post('/finish', protect, finishInterview);
+router.post('/submit', protect, submitInterview);
+router.get('/history', protect, getInterviewHistory);
+router.get('/:id', protect, getInterviewById);
+
+module.exports = router;

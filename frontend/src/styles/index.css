@@ -1,0 +1,102 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* 60% - Primary Background and Card styles */
+    --background: 210 20% 98%; /* Off-white #F8FAFC */
+    --foreground: 222.2 47.4% 11.2%; /* Dark Slate #0F172A */
+    --card: 0 0% 100%; /* Pure White #FFFFFF */
+    --card-foreground: 222.2 47.4% 11.2%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 47.4% 11.2%;
+
+    /* 30% - Secondary Structure background (dark sidebar/navbar) and supporting borders */
+    --secondary: 222.2 47.4% 11.2%; /* Slate 800 #1E293B */
+    --secondary-foreground: 210 20% 98%; /* Light Slate #F8FAFC */
+    --muted: 210 40% 96.1%; /* Slate 100 #F1F5F9 for secondary buttons */
+    --muted-foreground: 215.4 16.3% 46.9%; /* Slate 500 #64748B */
+    --border: 214.3 31.8% 91.4%; /* Slate 200 #E2E8F0 */
+    --input: 214.3 31.8% 91.4%;
+
+    /* 10% - Accent Color triggers (CTAs, Highlight and Hover states) */
+    --primary: 258.2 89.4% 66.3%; /* Purple #8B5CF6 */
+    --primary-foreground: 0 0% 100%;
+    --accent: 258.2 89.4% 66.3%;
+    --accent-foreground: 0 0% 100%;
+    --ring: 258.2 89.4% 66.3%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 20% 98%;
+    --radius: 0.75rem;
+  }
+
+  .dark {
+    /* 60% - Primary Background and Card styles for dark mode */
+    --background: 224 71.4% 4.1%; /* Deep dark #090D16 */
+    --foreground: 210 20% 98%; /* Off-white #F8FAFC */
+    --card: 222.2 47.4% 11.2%; /* Slate 900 #0F172A */
+    --card-foreground: 210 20% 98%;
+    --popover: 222.2 47.4% 11.2%;
+    --popover-foreground: 210 20% 98%;
+
+    /* 30% - Secondary Structure background and borders */
+    --secondary: 224 71.4% 6.5%; /* Darker gray #111827 */
+    --secondary-foreground: 210 20% 98%;
+    --muted: 222.2 47.4% 11.2%; /* Slate 900 #0F172A for secondary buttons */
+    --muted-foreground: 217.9 10.6% 64.9%;
+    --border: 215 27.9% 16.9%; /* Slate 800 #1E293B */
+    --input: 215 27.9% 16.9%;
+
+    /* 10% - Accent Color triggers */
+    --primary: 258.2 89.4% 66.3%; /* Purple #8B5CF6 */
+    --primary-foreground: 0 0% 100%;
+    --accent: 258.2 89.4% 66.3%;
+    --accent-foreground: 0 0% 100%;
+    --ring: 258.2 89.4% 66.3%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 20% 98%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+}
+
+/* Custom premium scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-muted rounded-full;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary) / 0.3);
+}
+
+/* Glassmorphism utility */
+.glass {
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.dark .glass {
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}

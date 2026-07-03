@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ../
+      dockerfile: docker/backend.Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - NODE_ENV=production
+    volumes:
+      - backend_uploads:/usr/src/app/uploads
+      - sqlite_data:/usr/src/app/database
+
+  frontend:
+    build:
+      context: ../
+      dockerfile: docker/frontend.Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+  # PLACEHOLDERS FOR FUTURE EXTENSIONS
+  # postgresql:
+  #   image: postgres:latest
+  #   ports:
+  #     - "5432:5432"
+  #   environment:
+  #     - POSTGRES_DB=career_copilot
+  #     - POSTGRES_USER=admin
+  #     - POSTGRES_PASSWORD=admin
+  #
+  # redis:
+  #   image: redis:latest
+  #   ports:
+  #     - "6379:6379"
+  #
+  # ai_service:
+  #   image: python:3.9-slim
+  #   ports:
+  #     - "8000:8000"
+
+volumes:
+  sqlite_data:
+  backend_uploads:

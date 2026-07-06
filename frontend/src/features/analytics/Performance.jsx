@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Bar, Line } from 'react-chartjs-2';
 import { 
   Chart as ChartJS, 
@@ -10,9 +11,24 @@ import {
   BarElement, 
   Title, 
   Tooltip, 
-  Legend 
+  Legend,
+  Filler
 } from 'chart.js';
-import { Loader2, Award, BarChart3, TrendingUp, AlertCircle, CheckCircle } from 'lucide-react';
+import { 
+  Loader2, 
+  Award, 
+  BarChart3, 
+  TrendingUp, 
+  AlertCircle, 
+  CheckCircle,
+  Activity,
+  Cpu,
+  Zap,
+  Target,
+  ArrowUpRight,
+  ShieldCheck,
+  BrainCircuit
+} from 'lucide-react';
 
 ChartJS.register(
   CategoryScale,
@@ -22,7 +38,8 @@ ChartJS.register(
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  Filler
 );
 
 const Performance = () => {
@@ -38,7 +55,7 @@ const Performance = () => {
       }
     } catch (err) {
       console.error('Failed to load performance analytics:', err);
-      setError('Could not connect to database analytics pipelines.');
+      setError('NEURAL_DATA_PIPELINE_OFFLINE');
     } finally {
       setLoading(false);
     }
@@ -50,176 +67,272 @@ const Performance = () => {
 
   if (loading) {
     return (
-      <div className="min-h-[50vh] flex flex-col items-center justify-center space-y-3">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <p className="text-xs text-muted-foreground">Gathering performance metrics...</p>
+      <div className="min-h-[60vh] flex flex-col items-center justify-center space-y-8">
+        <div className="relative">
+          <motion.div 
+            animate={{ rotate: 360 }}
+            transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+            className="w-20 h-20 border-t-2 border-primary rounded-full"
+          />
+          <BarChart3 className="absolute inset-0 m-auto h-8 w-8 text-primary animate-pulse" />
+        </div>
+        <div className="text-center space-y-2">
+          <p className="text-sm font-black tracking-[0.5em] text-primary uppercase ml-[0.5em]">AGGREGATING_NEURAL METRICS</p>
+          <p className="text-xs text-foreground/50 font-bold uppercase tracking-widest">Optimizing data visualization nodes...</p>
+        </div>
       </div>
     );
   }
 
-  if (error) {
-    return (
-      <div className="p-6 border border-destructive/20 bg-destructive/10 text-destructive rounded-2xl flex items-center gap-3">
-        <AlertCircle className="h-5 w-5" />
-        <span className="text-sm font-semibold">{error}</span>
-      </div>
-    );
-  }
-
-  // Calculate weak vs strong areas from skillsPerformance
   const strongAreas = analytics?.skillsPerformance?.filter(item => item.average >= 70) || [];
   const weakAreas = analytics?.skillsPerformance?.filter(item => item.average < 70 && item.count > 0) || [];
-
-  // Monthly Chart configurations
-  const barChartData = {
-    labels: analytics?.monthlyProgress?.map(item => item.month) || ['Current'],
-    datasets: [
-      {
-        label: 'Average Mock Score (%)',
-        data: analytics?.monthlyProgress?.map(item => item.average) || [0],
-        backgroundColor: 'rgba(139, 92, 246, 0.65)',
-        borderColor: 'rgb(139, 92, 246)',
-        borderWidth: 1,
-        borderRadius: 8,
-      },
-    ],
-  };
-
-  const lineChartData = {
-    labels: analytics?.monthlyProgress?.map(item => item.month) || ['Current'],
-    datasets: [
-      {
-        label: 'ATS Match Score progress (%)',
-        data: analytics?.monthlyProgress?.map(() => analytics.latestATSScore) || [0], // show latest progression trend
-        fill: false,
-        borderColor: 'rgb(139, 92, 246)',
-        tension: 0.2,
-        pointBackgroundColor: 'rgb(139, 92, 246)',
-        pointBorderWidth: 2,
-      },
-    ],
-  };
 
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: {
-        position: 'top',
-        labels: {
-          font: { size: 10, weight: 'bold' },
-        },
-      },
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        titleFont: { family: 'Space Grotesk', weight: 'bold', size: 12 },
+        bodyFont: { family: 'Inter', size: 11 },
+        padding: 12,
+        cornerRadius: 12,
+        borderColor: 'rgba(59, 130, 246, 0.2)',
+        borderWidth: 1
+      }
     },
     scales: {
       y: {
         min: 0,
         max: 100,
-        ticks: {
-          font: { size: 10 },
-        },
+        grid: { color: 'rgba(255, 255, 255, 0.03)' },
+        ticks: { font: { weight: 'bold', size: 9 }, color: 'rgba(255, 255, 255, 0.2)' }
       },
       x: {
-        ticks: {
-          font: { size: 10 },
-        },
-      },
-    },
+        grid: { display: false },
+        ticks: { font: { weight: 'black', family: 'Space Grotesk', size: 10 }, color: 'rgba(255, 255, 255, 0.4)' }
+      }
+    }
+  };
+
+  const barChartData = {
+    labels: analytics?.monthlyProgress?.map(item => item.month.toUpperCase()) || ['CURRENT'],
+    datasets: [{
+      data: analytics?.monthlyProgress?.map(item => item.average) || [0],
+      backgroundColor: 'rgba(59, 130, 246, 0.3)',
+      borderColor: '#3B82F6',
+      borderWidth: 2,
+      borderRadius: 12,
+      hoverBackgroundColor: '#3B82F6'
+    }]
+  };
+
+  const lineChartData = {
+    labels: analytics?.monthlyProgress?.map(item => item.month.toUpperCase()) || ['CURRENT'],
+    datasets: [{
+      data: analytics?.monthlyProgress?.map(() => analytics.latestATSScore) || [0],
+      fill: true,
+      backgroundColor: 'rgba(59, 130, 246, 0.05)',
+      borderColor: '#3B82F6',
+      borderWidth: 3,
+      tension: 0.4,
+      pointRadius: 6,
+      pointBackgroundColor: '#000000',
+      pointBorderColor: '#3B82F6',
+      pointBorderWidth: 2,
+      pointHoverRadius: 8,
+      pointHoverBackgroundColor: '#3B82F6'
+    }]
   };
 
   return (
-    <div className="space-y-8 animate-fadeIn max-w-6xl mx-auto">
+    <div className="space-y-12 animate-fadeIn pb-32 max-w-7xl mx-auto">
       
-      {/* Title */}
-      <div>
-        <h1 className="text-3xl font-extrabold tracking-tight">Performance Analytics</h1>
-        <p className="text-muted-foreground mt-1">Audit score timelines and diagnostic skill distributions.</p>
-      </div>
+      {/* Title Header */}
+      <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-foreground/5 pb-12">
+        <div className="space-y-4">
+          <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-primary/5 border border-primary/20 shadow-[0_0_20px_rgba(59,130,246,0.1)]">
+            <BarChart3 className="h-3.5 w-3.5 text-primary" />
+            <span className="text-sm font-black tracking-[0.4em] text-primary uppercase">NEURAL_ANALYTICS_V4.2</span>
+          </div>
+          <h1 className="text-xl lg:text-[6.5rem] font-sansDisplay font-black tracking-tighter uppercase text-foreground leading-[0.9]">
+            PERFORMANCE_ <br />
+            <span className="text-primary italic text-glow">METRICS.</span>
+          </h1>
+        </div>
+        <p className="text-foreground/50 text-sm font-black uppercase tracking-[0.2em] max-w-[240px] text-right leading-loose border-l border-foreground/5 pl-8">
+          REAL-TIME TELEMETRY OF YOUR COGNITIVE AND TECHNICAL INTERVIEW PERFORMANCE VECTORS.
+        </p>
+      </header>
 
-      {/* Main Aggregates */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      {/* Main Aggregates Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {[
-          { title: 'Total Scanned Resumes', value: analytics?.totalResumes || 0, icon: BarChart3 },
-          { title: 'Latest Scanned ATS Score', value: analytics?.latestATSScore > 0 ? `${analytics.latestATSScore}%` : 'N/A', icon: TrendingUp },
-          { title: 'Mock Sessions Completed', value: analytics?.totalInterviews || 0, icon: Award },
-          { title: 'Average Interview Rating', value: analytics?.averageInterviewScore > 0 ? `${analytics.averageInterviewScore}%` : 'N/A', icon: Award },
-        ].map((card, idx) => {
-          const Icon = card.icon;
-          return (
-            <div key={idx} className="p-5 border rounded-2xl bg-card shadow-sm text-xs">
-              <div className="flex items-center justify-between text-muted-foreground">
-                <span className="font-semibold uppercase tracking-wider">{card.title}</span>
-                <Icon className="h-4 w-4" />
+          { title: 'ATS AUDIT_COUNT', value: analytics?.totalResumes || 0, icon: Target, desc: 'TOTAL_FILES_INDEXED' },
+          { title: 'PEAK_ATS_MATCH', value: analytics?.latestATSScore > 0 ? `${analytics.latestATSScore}%` : '00.0', icon: TrendingUp, desc: 'SYSTEM PARITY_INDEX' },
+          { title: 'SIM_CYCLES_RUN', value: analytics?.totalInterviews || 0, icon: Cpu, desc: 'GRADED_SESSION_COUNT' },
+          { title: 'AVG_SIM_RATING', value: analytics?.averageInterviewScore > 0 ? `${analytics.averageInterviewScore}%` : '00.0', icon: BrainCircuit, desc: 'AGGREGATE_PERFORMANCE' },
+        ].map((card, idx) => (
+          <motion.div 
+            key={idx}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: idx * 0.1 }}
+            className="glass-card p-3 rounded-2xl border-foreground/5 space-y-4 hover:border-primary/20 transition-all group"
+          >
+            <div className="flex items-center justify-between">
+              <div className="w-10 h-10 rounded-xl bg-foreground/[0.03] flex items-center justify-center border border-foreground/5 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-500">
+                <card.icon className="h-5 w-5" />
               </div>
-              <h3 className="text-2xl font-black mt-2 text-foreground">{card.value}</h3>
+              <span className="text-sm font-black text-foreground/10 uppercase tracking-widest">0{idx + 1}</span>
             </div>
-          );
-        })}
+            <div className="space-y-1">
+              <p className="text-xs font-black tracking-[0.25em] text-foreground/50 uppercase">{card.title}</p>
+              <h3 className="text-lg font-sansDisplay font-black text-foreground tracking-tighter tabular-nums">{card.value}</h3>
+              <p className="text-xs font-bold text-foreground/10 uppercase tracking-widest pt-1">{card.desc}</p>
+            </div>
+          </motion.div>
+        ))}
       </div>
 
-      {/* Charts Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      {/* Charts Visualization Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         
-        {/* Mock Scores Progression */}
-        <div className="p-6 border rounded-2xl bg-card space-y-4 shadow-sm flex flex-col">
-          <h3 className="font-bold text-sm text-muted-foreground uppercase tracking-widest">Monthly Mock Interview Scores</h3>
-          <div className="h-64 relative flex-1">
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.4 }}
+          className="glass-card p-4 rounded-[1.5rem] border-foreground/10 space-y-10 bg-card/40 relative overflow-hidden"
+        >
+          <div className="absolute inset-0 bg-grid opacity-[0.03] pointer-events-none" />
+          <div className="flex items-center justify-between relative z-10 border-b border-foreground/5 pb-6">
+            <div className="flex items-center gap-4">
+              <div className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_10px_#3B82F6]" />
+              <h3 className="text-sm font-black tracking-[0.4em] text-foreground uppercase">MOCK_PROGRESSION_STREAM</h3>
+            </div>
+            <span className="text-xs font-black text-foreground/20 uppercase tracking-widest">UNIT: PERCENTAGE</span>
+          </div>
+          <div className="h-80 relative z-10">
             <Bar data={barChartData} options={chartOptions} />
           </div>
-        </div>
+        </motion.div>
 
-        {/* ATS Scores Progression */}
-        <div className="p-6 border rounded-2xl bg-card space-y-4 shadow-sm flex flex-col">
-          <h3 className="font-bold text-sm text-muted-foreground uppercase tracking-widest">ATS Match Progressions</h3>
-          <div className="h-64 relative flex-1">
+        <motion.div 
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.5 }}
+          className="glass-card p-4 rounded-[1.5rem] border-foreground/10 space-y-10 bg-card/40 relative overflow-hidden"
+        >
+          <div className="absolute inset-0 bg-grid opacity-[0.03] pointer-events-none" />
+          <div className="flex items-center justify-between relative z-10 border-b border-foreground/5 pb-6">
+            <div className="flex items-center gap-4 text-blue-400">
+              <div className="w-2 h-2 rounded-full bg-blue-400 animate-pulse shadow-[0_0_10px_#60A5FA]" />
+              <h3 className="text-sm font-black tracking-[0.4em] uppercase">ATS_COEFFICIENT_TREND</h3>
+            </div>
+            <span className="text-xs font-black text-foreground/20 uppercase tracking-widest">UNIT: PARITY_SCORE</span>
+          </div>
+          <div className="h-80 relative z-10">
             <Line data={lineChartData} options={chartOptions} />
           </div>
-        </div>
+        </motion.div>
 
       </div>
 
-      {/* Diagnostic lists */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      {/* Strategic Diagnostic Vector Breakdown */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         
-        {/* Strong Areas */}
-        <div className="p-6 border rounded-2xl bg-card space-y-4">
-          <h3 className="font-bold text-sm text-emerald-500 uppercase tracking-widest flex items-center gap-2">
-            <CheckCircle className="h-4 w-4" /> Core Strengths (Rating &ge; 70%)
-          </h3>
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          className="glass p-3 rounded-xl border-foreground/5 space-y-10 bg-emerald-500/[0.01] relative overflow-hidden group"
+        >
+          <div className="absolute top-0 right-0 p-3 opacity-[0.02] group-hover:opacity-[0.06] transition-opacity duration-1000 group-hover:scale-110">
+            <ShieldCheck className="w-24 h-24 text-emerald-500" />
+          </div>
           
-          {strongAreas.length === 0 ? (
-            <p className="text-xs text-muted-foreground py-4">No strengths recorded. Keep testing to view metrics.</p>
-          ) : (
-            <div className="space-y-3">
-              {strongAreas.map((item, idx) => (
-                <div key={idx} className="flex justify-between items-center text-xs border-b pb-2 last:border-0 last:pb-0">
-                  <span className="font-bold capitalize">{item.category} Rooms</span>
-                  <span className="font-black px-2 py-0.5 bg-emerald-500/10 text-emerald-600 rounded-lg">{item.average}% avg</span>
-                </div>
-              ))}
+          <div className="flex items-center gap-4 text-emerald-500 border-b border-emerald-500/10 pb-8 relative z-10">
+            <div className="w-12 h-12 rounded-[1.25rem] bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 shadow-[0_0_20px_rgba(16,185,129,0.1)]">
+              <CheckCircle className="h-6 w-6" />
             </div>
-          )}
-        </div>
-
-        {/* Weak Areas */}
-        <div className="p-6 border rounded-2xl bg-card space-y-4">
-          <h3 className="font-bold text-sm text-rose-500 uppercase tracking-widest flex items-center gap-2">
-            <AlertCircle className="h-4 w-4" /> Areas for Improvement (Rating &lt; 70%)
-          </h3>
-
-          {weakAreas.length === 0 ? (
-            <p className="text-xs text-muted-foreground py-4">Excellent! No weak segments recorded, or more sessions needed.</p>
-          ) : (
-            <div className="space-y-3">
-              {weakAreas.map((item, idx) => (
-                <div key={idx} className="flex justify-between items-center text-xs border-b pb-2 last:border-0 last:pb-0">
-                  <span className="font-bold capitalize">{item.category} Rooms</span>
-                  <span className="font-black px-2 py-0.5 bg-rose-500/10 text-rose-600 rounded-lg">{item.average}% avg</span>
-                </div>
-              ))}
+            <div className="space-y-1">
+              <h3 className="text-sm font-black tracking-[0.4em] uppercase">NEURAL_STRENGTHS</h3>
+              <p className="text-xs font-bold text-emerald-500/40 uppercase tracking-widest">RATING_THRESHOLD: &ge;70%</p>
             </div>
-          )}
-        </div>
+          </div>
+          
+          <div className="space-y-6 relative z-10">
+            {strongAreas.length === 0 ? (
+              <div className="py-12 flex flex-col items-center justify-center text-center space-y-4 opacity-20 grayscale">
+                <Target className="h-10 w-10" />
+                <p className="text-sm font-black tracking-[0.3em] uppercase">WAITING_FOR_DATA_VALIDATION</p>
+              </div>
+            ) : (
+              strongAreas.map((item, idx) => (
+                <div key={idx} className="group/item flex items-center justify-between p-4 rounded-xl bg-foreground/[0.02] border border-foreground/5 hover:border-emerald-500/30 transition-all duration-300">
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm font-black text-emerald-500/30 group-hover/item:text-emerald-500 transition-colors uppercase">0{idx+1}</span>
+                    <h4 className="text-sm font-black text-foreground/75 uppercase tracking-tighter group-hover/item:text-white transition-colors">{item.category} ROOMS</h4>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="w-24 h-1 bg-foreground/5 rounded-full overflow-hidden">
+                      <div className="h-full bg-emerald-500 shadow-[0_0_10px_#10b981]" style={{ width: `${item.average}%` }} />
+                    </div>
+                    <span className="text-xs font-sansDisplay font-black text-emerald-400 tabular-nums">{item.average}%_AVG</span>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </motion.div>
+
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.7 }}
+          className="glass p-3 rounded-xl border-foreground/5 space-y-10 bg-rose-500/[0.01] relative overflow-hidden group"
+        >
+          <div className="absolute top-0 right-0 p-3 opacity-[0.02] group-hover:opacity-[0.06] transition-opacity duration-1000 group-hover:scale-110">
+            <Zap className="w-24 h-24 text-rose-500" />
+          </div>
+          
+          <div className="flex items-center gap-4 text-rose-500 border-b border-rose-500/10 pb-8 relative z-10">
+            <div className="w-12 h-12 rounded-[1.25rem] bg-rose-500/10 flex items-center justify-center border border-rose-500/20 shadow-[0_0_20px_rgba(244,63,94,0.1)]">
+              <AlertCircle className="h-6 w-6" />
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-sm font-black tracking-[0.4em] uppercase">SYSTEM_VULNERABILITIES</h3>
+              <p className="text-xs font-bold text-rose-500/40 uppercase tracking-widest">RATING_THRESHOLD: &lt;70%</p>
+            </div>
+          </div>
+
+          <div className="space-y-6 relative z-10">
+            {weakAreas.length === 0 ? (
+              <div className="py-12 flex flex-col items-center justify-center text-center space-y-4">
+                <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
+                  <CheckCircle className="h-8 w-8 text-emerald-500" />
+                </div>
+                <p className="text-sm font-black tracking-[0.3em] text-emerald-500 uppercase">NO_VULNERABILITIES_DETECTED</p>
+              </div>
+            ) : (
+              weakAreas.map((item, idx) => (
+                <div key={idx} className="group/item flex items-center justify-between p-4 rounded-xl bg-foreground/[0.02] border border-foreground/5 hover:border-rose-500/30 transition-all duration-300">
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm font-black text-rose-500/30 group-hover/item:text-rose-500 transition-colors uppercase">0{idx+1}</span>
+                    <h4 className="text-sm font-black text-foreground/75 uppercase tracking-tighter group-hover/item:text-white transition-colors">{item.category} ROOMS</h4>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="w-24 h-1 bg-foreground/5 rounded-full overflow-hidden">
+                      <div className="h-full bg-rose-500 shadow-[0_0_10px_#f43f5e]" style={{ width: `${item.average}%` }} />
+                    </div>
+                    <span className="text-xs font-sansDisplay font-black text-rose-400 tabular-nums">{item.average}%_AVG</span>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </motion.div>
 
       </div>
 

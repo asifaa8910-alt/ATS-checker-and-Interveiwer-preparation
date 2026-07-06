@@ -5,6 +5,7 @@ import { ThemeProvider } from './context/ThemeContext';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import FloatingChatbot from './components/FloatingChatbot';
+import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
@@ -57,12 +58,14 @@ const DashboardLayout = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col transition-colors duration-200">
+    <div className="min-h-screen bg-background text-foreground flex flex-col selection:bg-primary/30 transition-colors duration-300">
       <Navbar />
-      <div className="flex flex-1">
+      <div className="flex flex-1 relative px-8 pt-6 pb-12 gap-3">
         <Sidebar />
-        <main className="flex-1 p-6 md:p-8 overflow-y-auto max-h-[calc(100vh-4rem)]">
-          <Outlet />
+        <main className="flex-1 pr-2">
+          <div className="max-w-[1600px] mx-auto">
+            <Outlet />
+          </div>
         </main>
       </div>
       <FloatingChatbot />
@@ -92,6 +95,7 @@ function App() {
         <Router>
           <Routes>
             {/* Public Routes */}
+            <Route path="/" element={<Landing />} />
             <Route
               path="/login"
               element={

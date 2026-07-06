@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { AlertCircle, Lock, Mail, User, Loader2, Sparkles } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { AlertCircle, Lock, Mail, User, Loader2, Sparkles, ArrowRight, ShieldCheck } from 'lucide-react';
 import ThemeToggle from '../../components/ThemeToggle';
 
 const Register = () => {
@@ -14,7 +15,6 @@ const Register = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Clear any previous global auth errors when mounting
     setError(null);
   }, [setError]);
 
@@ -29,17 +29,15 @@ const Register = () => {
     setFormError('');
 
     if (!name || !email || !password || !confirmPassword) {
-      setFormError('Please fill in all fields.');
+      setFormError('Complete profile indexing required.');
       return;
     }
-
     if (password.length < 6) {
-      setFormError('Password must be at least 6 characters.');
+      setFormError('Passphrase entropy insufficient.');
       return;
     }
-
     if (password !== confirmPassword) {
-      setFormError('Passwords do not match.');
+      setFormError('Passphrase mismatch detected.');
       return;
     }
 
@@ -50,167 +48,190 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2 bg-background transition-colors duration-200">
+    <div className="min-h-screen bg-black grid grid-cols-1 lg:grid-cols-2 selection:bg-primary/30 font-sans overflow-hidden">
       
-      {/* Decorative Brand/Info Column (Visible on large screens) */}
-      <div className="hidden lg:flex flex-col justify-between p-12 bg-gradient-to-br from-indigo-950 via-purple-900 to-indigo-900 text-white relative overflow-hidden">
-        {/* Glow Effects */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500 rounded-full mix-blend-screen filter blur-3xl opacity-20 animate-pulse"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-500 rounded-full mix-blend-screen filter blur-3xl opacity-20 animate-pulse delay-75"></div>
-
-        <div className="flex items-center gap-2 relative z-10">
-          <div className="bg-white/10 p-2.5 rounded-xl backdrop-blur-md border border-white/20">
-            <Sparkles className="h-6 w-6 text-purple-300" />
+      {/* Visual Column */}
+      <div className="hidden lg:flex flex-col justify-between p-10 relative overflow-hidden border-r border-foreground/5 bg-background">
+        <div className="absolute inset-0 bg-grid opacity-20"></div>
+        
+        <motion.div 
+          animate={{ 
+            scale: [1, 1.15, 1],
+            opacity: [0.2, 0.4, 0.2],
+          }}
+          transition={{ duration: 10, repeat: Infinity }}
+          className="absolute -bottom-20 -right-20 w-[600px] h-[600px] bg-blue-600/10 blur-[130px] rounded-full"
+        />
+        
+        <div className="relative z-10 flex items-center gap-3">
+          <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-[0_0_25px_rgba(59,130,246,0.5)]">
+            <Sparkles className="h-6 w-6 text-white" />
           </div>
-          <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-purple-200 to-white bg-clip-text text-transparent">
-            InterviewAI
-          </span>
+          <span className="font-sansDisplay font-black text-lg tracking-tighter uppercase text-white">INTERVIEW_AI</span>
         </div>
 
-        <div className="space-y-6 relative z-10 max-w-md">
-          <h1 className="text-4xl font-extrabold tracking-tight leading-tight">
-            Accelerate your career preparation today
-          </h1>
-          <p className="text-lg text-indigo-200 leading-relaxed">
-            Create an account to gain instant access to our comprehensive resume optimization suites and simulated, dynamic AI interview environments.
-          </p>
+        <div className="relative z-10 space-y-12">
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <h1 className="text-7xl lg:text-[7rem] font-sansDisplay font-black leading-[0.85] tracking-tighter uppercase mb-8 text-white">
+              Join the <br />
+              <span className="text-primary text-glow italic">Machine.</span>
+            </h1>
+            <p className="text-muted-foreground text-xl font-medium leading-relaxed max-w-md">
+              Initialize your candidate profile to begin the strategic optimization of your career trajectory.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-2">
+              <p className="text-sm font-black tracking-widest text-foreground/60 uppercase">ACTIVE_MODELS</p>
+              <p className="text-lg font-sansDisplay font-bold text-foreground tracking-tight">GPT_4o_MINI</p>
+            </div>
+            <div className="space-y-2">
+              <p className="text-sm font-black tracking-widest text-foreground/60 uppercase">LATENCY_RATE</p>
+              <p className="text-lg font-sansDisplay font-bold text-foreground tracking-tight">142_MS</p>
+            </div>
+          </div>
         </div>
 
-        <div className="text-sm text-indigo-300/80 relative z-10">
-          &copy; {new Date().getFullYear()} InterviewAI Corp. All rights reserved.
+        <div className="relative z-10 flex justify-between items-center text-xs font-black tracking-[0.3em] text-foreground/20 uppercase">
+          <span>SECURE_ENROLLMENT_V4.2.0</span>
+          <span>LOCATION_NODE: GLOBAL_CDN</span>
         </div>
       </div>
 
-      {/* Main Register Form Column */}
-      <div className="flex flex-col justify-center px-6 py-12 sm:px-16 lg:px-20 relative">
-        <div className="absolute top-8 right-8">
+      {/* Form Column */}
+      <div className="flex flex-col justify-center px-8 sm:px-24 lg:px-40 relative bg-black overflow-y-auto py-20">
+        <div className="absolute top-4 right-10 z-20 scale-125 opacity-50 hover:opacity-100 transition-opacity">
           <ThemeToggle />
         </div>
 
-        <div className="mx-auto w-full max-w-md space-y-8">
-          <div>
-            <h2 className="text-3xl font-extrabold tracking-tight">
-              Create an Account
-            </h2>
-            <p className="mt-2 text-sm text-muted-foreground">
-              Sign up today and kickstart your interview journey.
-            </p>
-          </div>
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="max-w-md w-full mx-auto space-y-10"
+        >
+          <header className="space-y-4">
+            <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-foreground/5 border border-foreground/5 mb-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></div>
+              <span className="text-sm font-black tracking-[0.2em] text-primary uppercase">CANDIDATE_INITIALIZATION</span>
+            </div>
+            <h2 className="text-xl font-sansDisplay font-black tracking-tight uppercase text-white">ENROLL NOW</h2>
+            <p className="text-muted-foreground text-base font-medium">Create your neural profile and start training.</p>
+          </header>
 
           {(formError || error) && (
-            <div className="flex items-center gap-3 p-4 text-sm text-destructive bg-destructive/10 rounded-lg border border-destructive/20 animate-shake">
-              <AlertCircle className="h-5 w-5 flex-shrink-0" />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="flex items-center gap-4 p-3 text-sm font-black tracking-widest text-rose-500 bg-rose-500/[0.03] rounded-2xl border border-rose-500/20 uppercase"
+            >
+              <AlertCircle className="h-5 w-5 shrink-0" />
               <span>{formError || error}</span>
-            </div>
+            </motion.div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <label htmlFor="name" className="text-sm font-semibold tracking-wide">
-                Full Name
-              </label>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-2 group">
+              <label className="text-sm font-black tracking-[0.2em] text-foreground/50 uppercase ml-2 group-focus-within:text-primary transition-colors">FULL_NAME</label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-muted-foreground">
+                <div className="absolute inset-y-0 left-5 flex items-center text-foreground/20 group-focus-within:text-primary transition-colors">
                   <User className="h-5 w-5" />
                 </div>
                 <input
-                  id="name"
                   type="text"
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-2.5 bg-background border border-input rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition duration-150 ease-in-out text-sm"
-                  placeholder="John Doe"
+                  placeholder="EX. JOHN DOE"
+                  className="w-full bg-foreground/[0.03] border border-foreground/10 rounded-[1.5rem] py-2.5 pl-14 pr-6 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 transition-all placeholder:text-white/5 text-foreground uppercase"
                 />
               </div>
             </div>
 
-            <div className="space-y-2">
-              <label htmlFor="email" className="text-sm font-semibold tracking-wide">
-                Email Address
-              </label>
+            <div className="space-y-2 group">
+              <label className="text-sm font-black tracking-[0.2em] text-foreground/50 uppercase ml-2 group-focus-within:text-primary transition-colors">IDENTITY EMAIL</label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-muted-foreground">
+                <div className="absolute inset-y-0 left-5 flex items-center text-foreground/20 group-focus-within:text-primary transition-colors">
                   <Mail className="h-5 w-5" />
                 </div>
                 <input
-                  id="email"
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-2.5 bg-background border border-input rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition duration-150 ease-in-out text-sm"
-                  placeholder="name@example.com"
+                  placeholder="NAME@DOMAIN.COM"
+                  className="w-full bg-foreground/[0.03] border border-foreground/10 rounded-[1.5rem] py-2.5 pl-14 pr-6 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 transition-all placeholder:text-white/5 text-foreground uppercase"
                 />
               </div>
             </div>
 
-            <div className="space-y-2">
-              <label htmlFor="password" className="text-sm font-semibold tracking-wide">
-                Password
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-muted-foreground">
-                  <Lock className="h-5 w-5" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2 group">
+                <label className="text-sm font-black tracking-[0.2em] text-foreground/50 uppercase ml-2 group-focus-within:text-primary transition-colors">ACCESS_KEY</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-5 flex items-center text-foreground/20 group-focus-within:text-primary transition-colors">
+                    <Lock className="h-5 w-5" />
+                  </div>
+                  <input
+                    type="password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    className="w-full bg-foreground/[0.03] border border-foreground/10 rounded-[1.5rem] py-2.5 pl-14 pr-6 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 transition-all placeholder:text-white/5 text-white"
+                  />
                 </div>
-                <input
-                  id="password"
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-2.5 bg-background border border-input rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition duration-150 ease-in-out text-sm"
-                  placeholder="••••••••"
-                />
               </div>
-            </div>
 
-            <div className="space-y-2">
-              <label htmlFor="confirmPassword" className="text-sm font-semibold tracking-wide">
-                Confirm Password
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-muted-foreground">
-                  <Lock className="h-5 w-5" />
+              <div className="space-y-2 group">
+                <label className="text-sm font-black tracking-[0.2em] text-foreground/50 uppercase ml-2 group-focus-within:text-primary transition-colors">CONFIRM_KEY</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-5 flex items-center text-foreground/20 group-focus-within:text-primary transition-colors">
+                    <Lock className="h-5 w-5" />
+                  </div>
+                  <input
+                    type="password"
+                    required
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="••••••••"
+                    className="w-full bg-foreground/[0.03] border border-foreground/10 rounded-[1.5rem] py-2.5 pl-14 pr-6 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 transition-all placeholder:text-white/5 text-white"
+                  />
                 </div>
-                <input
-                  id="confirmPassword"
-                  type="password"
-                  required
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-2.5 bg-background border border-input rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition duration-150 ease-in-out text-sm"
-                  placeholder="••••••••"
-                />
               </div>
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-xl text-sm font-semibold text-primary-foreground bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed transition duration-150 ease-in-out shadow-lg shadow-primary/20 mt-4"
+              className="w-full btn-primary py-2 rounded-[1.5rem] text-sm font-black tracking-[0.3em] flex items-center justify-center gap-3 group uppercase"
             >
               {loading ? (
                 <>
-                  <Loader2 className="animate-spin mr-2 h-4 w-4" />
-                  Creating Account...
+                  <Loader2 className="animate-spin h-5 w-5" />
+                  INITIALIZING_PROFILE...
                 </>
               ) : (
-                'Create Account'
+                <>
+                  INITIALIZE_ENROLLMENT
+                  <ArrowRight className="h-5 w-5 group-hover:translate-x-1.5 transition-transform" />
+                </>
               )}
             </button>
           </form>
 
-          <p className="mt-8 text-center text-sm text-muted-foreground">
-            Already have an account?{' '}
-            <Link
-              to="/login"
-              className="font-semibold text-primary hover:text-primary/80 transition duration-150 ease-in-out"
-            >
-              Sign In
-            </Link>
-          </p>
-        </div>
+          <footer className="pt-8 border-t border-foreground/5">
+            <p className="text-xs font-bold text-foreground/60 uppercase tracking-widest text-center">
+              ALREADY_ENROLLED?{' '}
+              <Link to="/login" className="text-primary font-black ml-2 hover:text-white transition-colors underline-offset-4 hover:underline">SIGN_IN</Link>
+            </p>
+          </footer>
+        </motion.div>
       </div>
     </div>
   );

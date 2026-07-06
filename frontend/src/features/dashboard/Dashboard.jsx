@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { motion } from 'framer-motion';
 import { 
   FileText, 
   Video, 
@@ -12,8 +13,15 @@ import {
   TrendingUp,
   Loader2,
   AlertCircle,
-  ShieldAlert,
-  FolderDot
+  ShieldCheck,
+  Zap,
+  Cpu,
+  Target,
+  Layers,
+  ArrowUpRight,
+  Terminal,
+  BrainCircuit,
+  Fingerprint
 } from 'lucide-react';
 
 const Dashboard = () => {
@@ -31,7 +39,7 @@ const Dashboard = () => {
       }
     } catch (err) {
       console.error('Failed to load dashboard statistics:', err);
-      setError('Could not connect to database analytics services.');
+      setError('System analytics node offline.');
     } finally {
       setLoading(false);
     }
@@ -43,216 +51,292 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-[50vh] flex flex-col items-center justify-center space-y-3">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <p className="text-xs text-muted-foreground">Gathering dashboard analytics...</p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="p-6 border border-destructive/20 bg-destructive/10 text-destructive rounded-2xl flex items-center gap-3">
-        <AlertCircle className="h-5 w-5 shrink-0" />
-        <span className="text-sm font-semibold">{error}</span>
+      <div className="min-h-[60vh] flex flex-col items-center justify-center space-y-8">
+        <div className="relative flex items-center justify-center">
+          <motion.div 
+            animate={{ rotate: 360 }}
+            transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+            className="w-24 h-24 border-t-2 border-primary border-dashed rounded-full"
+          />
+          <Cpu className="absolute h-8 w-8 text-primary animate-pulse shadow-primary/50 shadow-2xl" />
+        </div>
+        <div className="text-center space-y-3">
+          <p className="text-xs font-black tracking-[0.5em] text-primary uppercase ml-[0.5em]">SYNCHRONIZING NEURAL NODES</p>
+          <p className="text-xs text-foreground/30 font-bold uppercase tracking-widest">Latency optimization in progress...</p>
+        </div>
       </div>
     );
   }
 
   const statCards = [
     {
-      title: 'Latest ATS Score',
-      value: stats?.latestATSScore > 0 ? `${stats.latestATSScore}%` : 'N/A',
-      description: stats?.latestATSScore > 0 ? 'Extracted from latest scan' : 'No resumes optimized yet',
-      icon: FileText,
-      color: 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20',
+      title: 'ATS AUDIT INDEX',
+      value: stats?.latestATSScore > 0 ? `${stats.latestATSScore}%` : '00.0',
+      description: 'SCAN COEFFICIENT',
+      icon: Target,
+      color: 'text-blue-400',
       action: () => navigate('/resume')
     },
     {
-      title: 'Interviews Completed',
-      value: stats?.totalInterviews > 0 ? `${stats.totalInterviews}` : '0',
-      description: stats?.totalInterviews > 0 ? 'AI grader sessions' : 'No simulations started yet',
+      title: 'SIMULATION CYCLES',
+      value: stats?.totalInterviews > 0 ? `${stats.totalInterviews.toString().padStart(2, '0')}` : '00',
+      description: 'SESSIONS LOGGED',
       icon: Video,
-      color: 'text-indigo-500 bg-indigo-500/10 border-indigo-500/20',
+      color: 'text-indigo-400',
       action: () => navigate('/interview')
     },
     {
-      title: 'Average AI Rating',
-      value: stats?.averageInterviewScore > 0 ? `${stats.averageInterviewScore}%` : 'N/A',
-      description: stats?.averageInterviewScore > 0 ? 'Consolidated average rating' : 'Complete interviews to view score',
-      icon: Award,
-      color: 'text-amber-500 bg-amber-500/10 border-amber-500/20',
+      title: 'NEURAL CONFIDENCE',
+      value: stats?.averageInterviewScore > 0 ? `${stats.averageInterviewScore}%` : '00.0',
+      description: 'PERFORMANCE METRIC',
+      icon: BrainCircuit,
+      color: 'text-cyan-400',
       action: () => navigate('/performance')
     },
     {
-      title: 'Best Simulator Score',
-      value: stats?.bestInterviewScore > 0 ? `${stats.bestInterviewScore}%` : 'N/A',
-      description: stats?.bestInterviewScore > 0 ? 'Top mock evaluation record' : 'No graded scores recorded',
+      title: 'ELITE THRESHOLD',
+      value: stats?.bestInterviewScore > 0 ? `${stats.bestInterviewScore}%` : '00.0',
+      description: 'PEAK PERFORMANCE',
       icon: TrendingUp,
-      color: 'text-rose-500 bg-rose-500/10 border-rose-500/20',
+      color: 'text-primary',
       action: () => navigate('/performance')
     }
   ];
 
   return (
-    <div className="space-y-8 animate-fadeIn">
+    <div className="space-y-12 animate-fadeIn pb-32">
       
-      {/* Banner */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary to-purple-700 p-8 text-primary-foreground shadow-lg shadow-primary/25">
-        <div className="absolute right-0 top-0 -mr-6 -mt-6 w-52 h-52 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
-        <div className="relative z-10 max-w-xl space-y-3">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 border border-white/10 text-xs font-semibold backdrop-blur-md">
-            <Sparkles className="h-3.5 w-3.5 text-purple-200" />
-            AI Preparation Portal Active
-          </div>
-          <h1 className="text-3xl font-extrabold tracking-tight">
-            Welcome back, {user?.name}!
-          </h1>
-          <p className="text-primary-foreground/80 leading-relaxed text-sm">
-            Optimize your placement success. Audit your resume using state-of-the-art hybrid ATS keywords scanners, or test your skills in adaptive simulated interview rooms.
-          </p>
+      {/* Executive Welcome Header */}
+      <header className="flex flex-col xl:flex-row xl:items-end justify-between gap-3 border-b border-foreground/5 pb-12">
+        <div className="space-y-5">
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-primary/5 border border-primary/20 shadow-[0_0_20px_rgba(59,130,246,0.1)]"
+          >
+            <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+            <span className="text-xs font-black tracking-[0.3em] text-primary uppercase">EXECUTIVE DASHBOARD LIVE V4.2</span>
+          </motion.div>
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-lg md:text-xl lg:text-lg font-sansDisplay font-black tracking-tighter uppercase text-foreground leading-[0.85]"
+          >
+            WELCOME, <br />
+            <span className="text-primary italic text-glow">{user?.name.toUpperCase()}</span>
+          </motion.h1>
         </div>
-      </div>
-
-      {/* Stats Cards Row */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        {statCards.map((card, idx) => {
-          const Icon = card.icon;
-          return (
-            <div 
-              key={idx} 
-              onClick={card.action}
-              className="p-5 rounded-2xl border border-border bg-card text-card-foreground shadow-sm flex items-start gap-4 hover:border-primary/50 hover:shadow-md cursor-pointer transition duration-200"
-            >
-              <div className="p-2.5 rounded-xl bg-primary/10 text-primary border border-primary/20 shrink-0">
-                <Icon className="h-5 w-5" />
-              </div>
-              <div>
-                <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">{card.title}</p>
-                <h3 className="text-xl font-black mt-1.5 tracking-tight">{card.value}</h3>
-                <p className="text-[10px] text-muted-foreground mt-1 leading-relaxed">{card.description}</p>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Main Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
-        {/* Quick Actions Panel */}
-        <div className="p-6 rounded-2xl border border-border bg-card text-card-foreground shadow-sm space-y-6 lg:col-span-1">
-          <div>
-            <h2 className="text-lg font-bold tracking-tight">Action shortcuts</h2>
-            <p className="text-sm text-muted-foreground">Jump directly to core dashboard modules.</p>
+        <div className="flex items-center gap-3">
+          <div className="text-right hidden sm:block border-r border-foreground/5 pr-8">
+            <p className="text-xs font-black tracking-[0.2em] text-foreground/50 uppercase mb-1">SYSTEM RELIABILITY</p>
+            <p className="text-sm font-bold text-foreground uppercase tracking-widest">99.98% OPERATIONAL</p>
+          </div>
+          <motion.button 
+            whileHover={{ scale: 1.05 }}
+            whileActive={{ scale: 0.95 }}
+            onClick={() => navigate('/interview')}
+            className="btn-primary py-2 px-6 text-xs font-black tracking-[0.2em] uppercase flex items-center gap-4 rounded-2xl"
+          >
+            INIT NEW TRAINING CYCLE
+            <ArrowUpRight className="h-5 w-5" />
+          </motion.button>
+        </div>
+      </header>
+
+      {/* Main Grid: Bento-style with Masonry Logic */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        
+        {/* Left Column: Core Stats (Spans 8) */}
+        <div className="lg:col-span-8 space-y-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {statCards.map((card, idx) => {
+              const Icon = card.icon;
+              return (
+                <motion.div 
+                  key={idx}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.1 + 0.3 }}
+                  whileHover={{ y: -6, borderColor: 'rgba(59, 130, 246, 0.4)' }}
+                  onClick={card.action}
+                  className="glass-card p-4 rounded-2xl flex flex-col justify-between h-40 cursor-pointer relative overflow-hidden group"
+                >
+                  <div className="absolute -right-6 -bottom-6 opacity-[0.02] group-hover:opacity-[0.06] transition-opacity group-hover:scale-110 duration-700">
+                    <Icon className="w-48 h-48 text-foreground" />
+                  </div>
+                  
+                  <div className="flex items-start justify-between relative z-10">
+                    <div className="w-14 h-14 rounded-2xl glass flex items-center justify-center border-foreground/10 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-500 group-hover:shadow-[0_0_30px_rgba(59,130,246,0.3)]">
+                      <Icon className="h-7 w-7" />
+                    </div>
+                    <div className="text-xs font-black text-foreground/40 tracking-widest uppercase">0{idx + 1}</div>
+                  </div>
+                  
+                  <div className="relative z-10">
+                    <p className="text-xs font-black tracking-[0.25em] text-foreground/60 uppercase mb-2">{card.title}</p>
+                    <h3 className="text-xl font-sansDisplay font-black text-foreground tracking-tighter mb-3 leading-none">{card.value}</h3>
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-1 bg-foreground/10 rounded-full overflow-hidden">
+                        <motion.div 
+                          initial={{ width: 0 }}
+                          animate={{ width: '70%' }}
+                          transition={{ duration: 1.5, delay: idx * 0.2 + 0.5 }}
+                          className="h-full bg-primary shadow-[0_0_10px_#3B82F6]"
+                        />
+                      </div>
+                      <p className="text-sm font-bold text-foreground/55 uppercase tracking-[0.2em]">{card.description}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
 
-          <div className="space-y-3">
-            <button 
-              onClick={() => navigate('/resume')}
-              className="w-full flex items-center justify-between p-4 rounded-xl border border-border bg-muted/50 hover:bg-muted transition text-left group"
-            >
-              <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-lg bg-primary/10 text-primary">
-                  <FileText className="h-5 w-5" />
+          {/* Featured Action: Simulation Launch */}
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8 }}
+            className="glass-card p-3 rounded-[1.5rem] relative overflow-hidden group border-foreground/10 bg-gradient-to-br from-card to-background"
+          >
+            <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-primary/5 blur-[120px] rounded-full -mr-40 -mt-40 group-hover:bg-primary/10 transition-colors duration-700"></div>
+            <div className="relative z-10 flex flex-col xl:flex-row items-center justify-between gap-3">
+              <div className="space-y-6 max-w-xl">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-[1.25rem] glass flex items-center justify-center border-primary/30 shadow-[0_0_20px_rgba(59,130,246,0.15)] group-hover:scale-110 transition-transform">
+                    <Zap className="h-6 w-6 text-primary fill-primary/20" />
+                  </div>
+                  <h2 className="text-xl font-sansDisplay font-black text-foreground tracking-tight uppercase">ENGAGE QUANTUM ROOMS</h2>
                 </div>
-                <div>
-                  <h4 className="text-sm font-bold">Audit Resume Match</h4>
-                  <p className="text-xs text-muted-foreground">Get ATS scores and bullet improvements.</p>
-                </div>
-              </div>
-              <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:translate-x-1 transition-transform" />
-            </button>
-
-            <button 
-              onClick={() => navigate('/interview')}
-              className="w-full flex items-center justify-between p-4 rounded-xl border border-border bg-muted/50 hover:bg-muted transition text-left group"
-            >
-              <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-lg bg-primary/10 text-primary">
-                  <Video className="h-5 w-5" />
-                </div>
-                <div>
-                  <h4 className="text-sm font-bold">Launch AI Simulator</h4>
-                  <p className="text-xs text-muted-foreground">Select Tech, HR, or Situational rooms.</p>
+                <p className="text-foreground/60 text-base font-medium leading-relaxed uppercase tracking-tight">
+                  Simulate high-stakes technical environments with real-time biometric sentiment mapping. Calibrate your performance before the elite recruiters scan.
+                </p>
+                <div className="flex flex-wrap gap-4">
+                  {['NODE JS V21', 'SYSTEM ARCHITECTURE', 'BEHAVIORAL MODELING', 'EXECUTIVE STRATEGY'].map(tag => (
+                    <span key={tag} className="text-sm font-black tracking-widest px-4 py-2 rounded-xl bg-foreground/5 border border-foreground/15 text-foreground/60 uppercase hover:text-primary hover:border-primary/30 transition-all cursor-default">{tag}</span>
+                  ))}
                 </div>
               </div>
-              <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:translate-x-1 transition-transform" />
-            </button>
-          </div>
+              <button 
+                onClick={() => navigate('/interview')}
+                className="btn-primary px-8 py-2.5 text-xs font-black tracking-[0.3em] uppercase group whitespace-nowrap rounded-xl"
+              >
+                INITIALIZE SIM
+              </button>
+            </div>
+          </motion.div>
         </div>
 
-        {/* Diagnostic Topics & Recent Interview */}
-        <div className="p-6 rounded-2xl border border-border bg-card text-card-foreground shadow-sm space-y-6 lg:col-span-1">
-          <div>
-            <h2 className="text-lg font-bold tracking-tight">AI Skills Diagnostic</h2>
-            <p className="text-sm text-muted-foreground">Topic-based strengths and weaknesses.</p>
-          </div>
-
-          <div className="space-y-4 text-xs">
-            <div className="p-3 bg-emerald-500/5 border border-emerald-500/20 rounded-xl flex items-center justify-between">
-              <div>
-                <p className="text-muted-foreground">Strongest Subject Area</p>
-                <h4 className="font-bold text-sm capitalize text-emerald-600 dark:text-emerald-400 mt-0.5">{stats?.strongestTopic || 'N/A'}</h4>
+        {/* Right Column: Terminal & Status (Spans 4) */}
+        <div className="lg:col-span-4 space-y-10">
+          {/* Neural status card */}
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.5 }}
+            className="glass p-4 rounded-[1.5rem] border-foreground/5 space-y-10 bg-foreground/[0.01] relative"
+          >
+            <div className="flex items-center justify-between border-b border-foreground/5 pb-6">
+              <div className="flex items-center gap-3">
+                <BrainCircuit className="h-5 w-5 text-primary" />
+                <h3 className="text-xs font-black tracking-[0.4em] text-foreground uppercase">NEURAL DIAGNOSTIC</h3>
               </div>
-              <Award className="h-5 w-5 text-emerald-500 shrink-0" />
+              <div className="px-2 py-1 rounded-md bg-emerald-500/10 text-emerald-500 text-xs font-black uppercase">LIVE SCAN</div>
             </div>
 
-            <div className="p-3 bg-rose-500/5 border border-rose-500/20 rounded-xl flex items-center justify-between">
-              <div>
-                <p className="text-muted-foreground">Weakest Focus Area</p>
-                <h4 className="font-bold text-sm capitalize text-rose-600 dark:text-rose-400 mt-0.5">{stats?.weakestTopic || 'N/A'}</h4>
-              </div>
-              <ShieldAlert className="h-5 w-5 text-rose-500 shrink-0" />
-            </div>
-
-            {stats?.recentInterview && (
-              <div className="p-4 border rounded-xl bg-primary/5 border-primary/20 space-y-2 mt-2">
-                <h4 className="font-bold text-primary text-xs uppercase tracking-wider">Most Recent Interview Session</h4>
-                <div className="flex justify-between items-center text-xs">
-                  <div>
-                    <p className="font-bold capitalize">{stats.recentInterview.type} Room</p>
-                    <p className="text-[10px] text-muted-foreground mt-0.5">{stats.recentInterview.targetRole}</p>
-                  </div>
-                  <span className="text-sm font-black px-2.5 py-1 bg-primary/10 text-primary border border-primary/20 rounded-lg">
-                    {stats.recentInterview.overallScore}%
-                  </span>
+            <div className="space-y-8">
+              <div className="space-y-4">
+                <div className="flex justify-between items-center text-sm font-black tracking-widest">
+                  <span className="text-foreground/60 uppercase">PRIMARY STRENGTH VECTOR</span>
+                  <span className="text-emerald-400 uppercase font-sansDisplay tracking-tight text-sm">{stats?.strongestTopic || 'NONE'}</span>
+                </div>
+                <div className="w-full h-2 bg-foreground/5 rounded-full overflow-hidden p-[1px]">
+                  <motion.div 
+                    initial={{ width: 0 }}
+                    animate={{ width: stats?.strongestTopic ? '88%' : '0%' }}
+                    className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.4)]"
+                  />
                 </div>
               </div>
-            )}
-          </div>
-        </div>
 
-        {/* Activity Feed */}
-        <div className="p-6 rounded-2xl border border-border bg-card text-card-foreground shadow-sm space-y-6 lg:col-span-1">
-          <div>
-            <h2 className="text-lg font-bold tracking-tight">Recent Activity Feed</h2>
-            <p className="text-sm text-muted-foreground">Logs of your completed optimizations and interviews.</p>
-          </div>
-
-          {stats?.recentActivity?.length === 0 ? (
-            <div className="text-center py-8 text-xs text-muted-foreground flex flex-col items-center justify-center space-y-2">
-              <Activity className="h-8 w-8 text-muted/40 animate-pulse" />
-              <p>No activity recorded yet. Try uploading a resume or starting an interview!</p>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center text-sm font-black tracking-widest">
+                  <span className="text-foreground/60 uppercase">CORE VULNERABILITY</span>
+                  <span className="text-rose-400 uppercase font-sansDisplay tracking-tight text-sm">{stats?.weakestTopic || 'NONE'}</span>
+                </div>
+                <div className="w-full h-2 bg-foreground/5 rounded-full overflow-hidden p-[1px]">
+                  <motion.div 
+                    initial={{ width: 0 }}
+                    animate={{ width: stats?.weakestTopic ? '42%' : '0%' }}
+                    className="h-full bg-gradient-to-r from-rose-500 to-orange-400 rounded-full shadow-[0_0_15px_rgba(244,63,94,0.4)]"
+                  />
+                </div>
+              </div>
             </div>
-          ) : (
-            <div className="space-y-4 max-h-[220px] overflow-y-auto pr-1">
-              {stats?.recentActivity?.map((act, idx) => (
-                <div key={idx} className="flex gap-4 items-start text-xs border-b border-border pb-3 last:border-0 last:pb-0">
-                  <div className="p-2 rounded-lg shrink-0 bg-primary/10 text-primary">
-                    {act.type === 'resume_scan' ? <FileText className="h-4 w-4" /> : <Video className="h-4 w-4" />}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h4 className="font-bold truncate">{act.title}</h4>
-                    <p className="text-muted-foreground mt-0.5">{act.meta}</p>
-                  </div>
-                  <span className="text-[10px] text-muted-foreground font-semibold">
-                    {new Date(act.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
-                  </span>
+
+            <div className="pt-6 grid grid-cols-3 gap-3">
+              {[...Array(9)].map((_, i) => (
+                <div key={i} className="space-y-2">
+                  <div className={`h-1.5 rounded-full ${i < 6 ? 'bg-primary/40' : 'bg-foreground/10'}`}></div>
+                  <span className="text-xs font-bold text-foreground/20 uppercase block text-center">NODE {i+1}</span>
                 </div>
               ))}
             </div>
-          )}
+          </motion.div>
+
+          {/* Activity Feed Terminal */}
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.7 }}
+            className="glass p-4 rounded-[1.5rem] border-foreground/5 flex flex-col h-[580px] bg-foreground/[0.01] relative overflow-hidden"
+          >
+            <div className="absolute top-0 left-0 w-full h-full bg-grid opacity-[0.03] pointer-events-none"></div>
+            
+            <div className="flex items-center justify-between mb-8 border-b border-foreground/5 pb-6 relative z-10">
+              <div className="flex items-center gap-3">
+                <Terminal className="h-5 w-5 text-foreground/30" />
+                <h3 className="text-xs font-black tracking-[0.4em] text-foreground uppercase">CYCLE LOGS</h3>
+              </div>
+              <Fingerprint className="h-5 w-5 text-foreground/10" />
+            </div>
+
+            <div className="flex-1 space-y-8 overflow-y-auto custom-scrollbar pr-3 relative z-10">
+              {stats?.recentActivity?.length === 0 ? (
+                <div className="h-full flex flex-col items-center justify-center text-center space-y-6 opacity-20 grayscale">
+                  <Layers className="h-12 w-12 animate-pulse text-foreground" />
+                  <p className="text-xs font-black tracking-[0.4em] uppercase leading-relaxed text-foreground">LISTENING FOR NEURAL STREAM...</p>
+                </div>
+              ) : (
+                stats?.recentActivity?.map((act, idx) => (
+                  <motion.div 
+                    key={idx} 
+                    initial={{ opacity: 0, x: 10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: idx * 0.1 + 1 }}
+                    className="flex gap-3 group cursor-default"
+                  >
+                    <div className="w-10 h-10 rounded-xl glass flex items-center justify-center shrink-0 border-foreground/5 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300 group-hover:shadow-[0_0_20px_rgba(59,130,246,0.3)]">
+                      {act.type === 'resume_scan' ? <FileText className="h-5 w-5" /> : <Video className="h-5 w-5" />}
+                    </div>
+                    <div className="space-y-1.5 min-w-0 flex-1">
+                      <div className="flex items-center justify-between gap-4">
+                        <h4 className="text-sm font-black text-foreground uppercase truncate tracking-tight">{act.title}</h4>
+                        <span className="text-sm font-black text-foreground/50 uppercase whitespace-nowrap font-sansDisplay">{new Date(act.date).toLocaleDateString()}</span>
+                      </div>
+                      <p className="text-xs font-medium text-foreground/60 leading-relaxed uppercase tracking-tighter truncate">{act.meta}</p>
+                    </div>
+                  </motion.div>
+                ))
+              )}
+            </div>
+
+            <button className="mt-10 w-full py-2 rounded-[1.5rem] bg-foreground/[0.03] border border-foreground/5 text-xs font-black tracking-[0.3em] text-foreground/30 uppercase hover:bg-foreground/10 hover:text-foreground transition-all duration-300 relative z-10">
+              EXPORT DATA STREAM
+            </button>
+          </motion.div>
         </div>
 
       </div>

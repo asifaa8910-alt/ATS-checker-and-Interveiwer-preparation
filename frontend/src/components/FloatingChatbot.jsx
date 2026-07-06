@@ -91,7 +91,7 @@ const FloatingChatbot = () => {
 
       {/* Chat Window Panel */}
       {isOpen && (
-        <div className="w-80 sm:w-96 h-[500px] bg-card border rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-fadeIn text-card-foreground">
+        <div className="w-64 sm:w-96 h-[500px] bg-card border rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-fadeIn text-card-foreground">
           
           {/* Header */}
           <div className="p-4 bg-primary text-primary-foreground flex items-center justify-between">
@@ -101,7 +101,7 @@ const FloatingChatbot = () => {
               </div>
               <div>
                 <h3 className="text-sm font-bold tracking-tight">AI Career Coach</h3>
-                <span className="text-[10px] text-primary-foreground/75">Ready to assist</span>
+                <span className="text-sm text-primary-foreground/75">Ready to assist</span>
               </div>
             </div>
             <button
